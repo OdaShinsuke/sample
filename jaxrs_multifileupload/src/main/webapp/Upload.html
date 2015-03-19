@@ -1,0 +1,18 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>JAX-RS FileUpload</title>
+</head>
+<body>
+
+  <form action="api/multifileupload/multi" method="post" enctype="multipart/form-data">
+    <h3>複数ファイル(任意)</h3>
+    <div><input type="text" name="text" /> </div>
+    <div><input type="file" name="uploadedFile1"></div>
+    <div><input type="file" name="uploadedFile2"></div>
+    <div><input type="file" name="uploadedFile3"></div>
+    <div><input type="submit" value="送信" /></div>
+  </form>
+</body>
+</html>
