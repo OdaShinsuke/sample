@@ -1,0 +1,66 @@
+apply plugin: "java"
+apply plugin: "war"
+
+// 参考： http://stackoverflow.com/questions/21587477/choose-arquillian-container-during-gradle-build
+
+ext.libraryVersions = [
+  wildfly            : '8.2.0.Final',
+  arquillian         : '1.1.5.Final',
+  resteasy           : '3.0.10.Final'
+]
+
+configurations {
+  wildflyRemoteTestRuntime {
+    extendsFrom testRuntime
+    exclude module: 'wildfly-arquillian-container-managed'
+  }
+}
+
+repositories {
+  maven { url 'https://repository.jboss.org/nexus/content/groups/public/' }
+  mavenCentral()
+}
+
+dependencies {
+  compile 'org.apache.commons:commons-lang3:+'
+
+  providedCompile 'javax:javaee-web-api:7.0'
+
+  testCompile 'junit:junit:4.12'
+  testCompile "org.jboss.resteasy:resteasy-client:${libraryVersions.resteasy}"
+  testCompile "org.jboss.arquillian.junit:arquillian-junit-container:${libraryVersions.arquillian}"
+  testCompile "org.jboss.arquillian.protocol:arquillian-protocol-servlet:${libraryVersions.arquillian}"
+  testCompile "org.wildfly:wildfly-arquillian-container-managed:${libraryVersions.wildfly}" // IDE でテストする用に testCompile にしている
+  wildflyRemoteTestRuntime "org.wildfly:wildfly-arquillian-container-remote:${libraryVersions.wildfly}"
+}
+
+// 実行時に必要な jar を コピー
+// ※Maven なら ShrinkWrap で 依存関係集められる。
+// Gradle は ShrinkWrap + GradleImportor 経由で Gradle で作成warを Deploy 出来る。
+// 今回は、Gradle で作成した war では都合が悪いことがあるので、依存関係の解決のために runtime で必要な jar をかき集めて
+// .addAsLibraries(Paths.get("build", "output", "libs").toFile().listFiles()) で依存関係追加
+task copyToLib(type: Sync) {
+  into "$buildDir/output/libs"
+  from configurations.runtime - configurations.providedCompile
+}
+test.dependsOn(copyToLib)
+
+sourceCompatibility = targetCompatibility = '1.8'
+def defaultEncoding = 'UTF-8'
+tasks.withType(AbstractCompile) each { it.options.encoding = defaultEncoding }
+
+/**
+ * WildFly Remote サーバーでのテスト
+ */
+task wildflyRemoteTest(type: Test) {
+  // arquillian.xml の切替
+  systemProperty "arquillian.launch", "wildfly-remote"
+  systemProperty "TEST_SERVER", "remoteserver:8080"
+
+  dependsOn(copyToLib)
+  classpath = project.configurations.getByName('wildflyRemoteTestRuntime') + project.sourceSets.main.output + project.sourceSets.test.output
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.3'
+}
