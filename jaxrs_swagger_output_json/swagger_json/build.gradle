@@ -1,0 +1,35 @@
+import javax.ws.rs.Path
+import com.wordnik.swagger.jaxrs.Reader
+import com.wordnik.swagger.models.Swagger
+import com.wordnik.swagger.models.Info
+import com.wordnik.swagger.models.Scheme
+import com.wordnik.swagger.util.Json
+import com.wordnik.swagger.models.auth.ApiKeyAuthDefinition
+import com.wordnik.swagger.models.auth.In
+import com.wordnik.swagger.models.parameters.HeaderParameter
+
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath project(':app')
+    classpath 'com.wordnik:swagger-jaxrs:1.5.2-M1'
+  }
+}
+
+// クロージャーの形にしておく必要あり
+task generateSwaggerJson << {
+  def data = [sample.app.SampleResource.class] as Set
+
+  def swagger = new Swagger()
+    .info(new Info().version("v1").title("app"))
+    .host("localhost:8080")
+    .basePath("/app/api")
+    .scheme(Scheme.HTTP)
+
+  def reader = new Reader(swagger)
+  reader.read(data)
+
+  Json.mapper.writeValue(new File("../api-docs.json"), swagger)
+}
