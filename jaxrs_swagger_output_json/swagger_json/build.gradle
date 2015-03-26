@@ -33,3 +33,7 @@ task generateSwaggerJson << {
 
   Json.mapper.writeValue(new File("../api-docs.json"), swagger)
 }
+
+task wrapper(type: Wrapper) {
+  gradleVersion = '2.3'
+}

@@ -4,16 +4,9 @@ apply plugin: "war"
 ext.libraryVersions = [
   wildfly            : '8.2.0.Final',
   arquillian         : '1.1.5.Final',
-  resteasy           : '3.0.10.Final', 
+  resteasy           : '3.0.10.Final',
   swagger            : '1.5.2-M1' // Swagger は v2 系
 ]
-
-configurations {
-  wildflyRemoteTestRuntime {
-    extendsFrom testRuntime
-    exclude module: 'wildfly-arquillian-container-managed'
-  }
-}
 
 repositories {
   maven { url 'https://repository.jboss.org/nexus/content/groups/public/' }
