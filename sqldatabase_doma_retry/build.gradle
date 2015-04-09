@@ -1,0 +1,28 @@
+apply plugin: "java"
+
+ext.libraryVersions = [
+  doma            : '2.2.0'
+]
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile "org.seasar.doma:doma:${libraryVersions.doma}"
+  compile files('libs/sqljdbc41.jar')
+  
+  testCompile 'junit:junit:4.12'
+}
+
+sourceCompatibility = targetCompatibility = '1.8'
+def defaultEncoding = 'UTF-8'
+tasks.withType(AbstractCompile) each { it.options.encoding = defaultEncoding }
+
+
+processResources.destinationDir = compileJava.destinationDir
+compileJava.dependsOn processResources
+
+task wrapper(type: Wrapper) {
+  gradleVersion = '2.3'
+}
