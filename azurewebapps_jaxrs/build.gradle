@@ -1,0 +1,33 @@
+apply plugin: 'java'
+apply plugin: 'war'
+
+repositories {
+  mavenCentral()
+}
+
+ext.libraryVersions = [
+  resteasy     : '3.0.13.Final',
+  weld         : '2.3.1.Final', 
+  swagger      : '1.5.0'
+]
+
+dependencies {
+  compile files('libs/sqljdbc42.jar') // ver 6.0 preview
+  compile "org.jboss.weld.servlet:weld-servlet:${libraryVersions.weld}"
+  compile "org.jboss.resteasy:resteasy-jaxrs:${libraryVersions.resteasy}"
+  compile "org.jboss.resteasy:resteasy-servlet-initializer:${libraryVersions.resteasy}"
+  compile "org.jboss.resteasy:resteasy-cdi:${libraryVersions.resteasy}"
+  compile "org.jboss.resteasy:resteasy-jackson2-provider:${libraryVersions.resteasy}"
+}
+
+sourceCompatibility = targetCompatibility = '1.8'
+def defaultEncoding = 'UTF-8'
+tasks.withType(AbstractCompile) each { it.options.encoding = defaultEncoding }
+
+// Azure Web Apps Tomcat にデプロイするフォルダが ルートの webapps
+// Azure Web Apps の ローカル git 用
+task copyWar(type: Sync, dependsOn: 'war') {
+  from 'build/libs/sample.war'
+  into 'webapps'
+}
+
