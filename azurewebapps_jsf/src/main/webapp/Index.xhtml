@@ -10,7 +10,7 @@
   <h:form id="form">
     <p:outputLabel value="ファイル名 (default.png / test.png しか対応してないよ)"/>
     <p:inputText value="#{backingBean.fileNm}"/>
-    <p:graphicImage value="#{imageBackingBean.image}" cache="false" >
+    <p:graphicImage value="#{imageBackingBean.image}" >
       <f:param name="name" value="#{backingBean.fileNm}"/>
     </p:graphicImage>
     <p:commandButton actionListener="#{backingBean.submit}" value="サブミット" ajax="false"/>
