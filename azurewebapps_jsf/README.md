@@ -1,1 +1,1 @@
-Microsoft Azure Web Apps ‚Å Java8 + Tomcat8 ‚Å JSF + CDI ‚ğ“®‚©‚·ƒTƒ“ƒvƒ‹
+Microsoft Azure Web Apps ã§ Java8 + Tomcat8 ã§ PrimeFaces(JSF) Graphic Image å‹•ã‹ã™ã‚µãƒ³ãƒ—ãƒ«
