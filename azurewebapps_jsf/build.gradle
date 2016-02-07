@@ -1,0 +1,33 @@
+apply plugin: 'java'
+apply plugin: 'war'
+
+repositories {
+  mavenCentral()
+}
+
+ext.libraryVersions = [
+  primefaces   : '5.3',
+  weld         : '2.3.1.Final', 
+]
+
+dependencies {
+  compile "org.primefaces:primefaces:${libraryVersions.primefaces}"
+  compile "org.jboss.weld.servlet:weld-servlet:${libraryVersions.weld}"
+  compile 'com.sun.faces:jsf-api:2.2.6'
+  compile 'com.sun.faces:jsf-impl:2.2.6'
+  compile 'javax.annotation:jsr250-api:1.0'
+  runtime 'javax.servlet:jstl:1.2'
+  compile 'javax.servlet:servlet-api:2.5'
+}
+
+sourceCompatibility = targetCompatibility = '1.8'
+def defaultEncoding = 'UTF-8'
+tasks.withType(AbstractCompile) each { it.options.encoding = defaultEncoding }
+
+// Azure Web Apps Tomcat にデプロイするフォルダが ルートの webapps
+// Azure Web Apps の ローカル git 用
+task copyWar(type: Sync, dependsOn: 'war') {
+  from 'build/libs'
+  into 'webapps'
+}
+

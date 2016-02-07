@@ -1,0 +1,1 @@
+Microsoft Azure Web Apps ‚Å Java8 + Tomcat8 ‚Å JSF + CDI ‚ð“®‚©‚·ƒTƒ“ƒvƒ‹
